@@ -1,10 +1,10 @@
 var assert = require('assert'),
   email = require('../mailgun'),
   path = require('path'),
-  templatePath = path.join(process.cwd(), 'server/templates/email'),
+  templatePath = path.join(process.cwd(), 'templates'),
   fs = require('fs'),
   renderedPath = path.join(__dirname, 'rendered-templates'),
-  loggerConfig = require('../server/config/env/log_config.json'),
+  loggerConfig = require('../config/env/log_config.json'),
   logger = require('aquajs-logger'),
   log;
 
@@ -75,4 +75,3 @@ describe('send email tests', function () {
   });
 
 });
-

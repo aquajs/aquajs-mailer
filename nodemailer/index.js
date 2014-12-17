@@ -1,18 +1,23 @@
-
 // # node-email-templates
 
 // ## Example with [Nodemailer](https://github.com/andris9/Nodemailer)
 
-var path           = require('path')
-  , templatesDir   = path.resolve(__dirname, '..', 'templates')
-  , emailTemplates = require('email-templates')
-  , nodemailer     = require('nodemailer')
-  , fs             = require('fs');
+var path = require('path'),
+  fs = require('fs'),
+  nodemailer = require('nodemailer'),
+  emailTemplates = require('email-templates'),
+  templatesDir = path.resolve(__dirname, '..', 'templates'),
+  loggerConfig = require('../config/env/log_config.json'),
+  logger = require('aquajs-logger'),
+  log;
 
-emailTemplates(templatesDir, function(err, template) {
+logger.init(loggerConfig);
+log = logger.getLogger();
+
+emailTemplates(templatesDir, function (err, template) {
 
   if (err) {
-    console.log(err);
+    log.error('Error loading emailTemplates: %s', err);
   } else {
 
     // ## Send a single email
@@ -34,17 +39,19 @@ emailTemplates(templatesDir, function(err, template) {
         last: 'Mia'
       }
     };
+
     var attachments = [{
       filename: 'test.txt',
       streamSource: fs.createReadStream('./test.txt')
-    },{
+    }, {
       filename: 'test.txt',
       streamSource: fs.createReadStream('./test.txt')
     }];
+
     // Send a single email with attachment
-    template('newsletter', locals, function(err, html, text) {
+    template('newsletter', locals, function (err, html, text) {
       if (err) {
-        console.log(err);
+        log.error('Error loading template: %s', err);
       } else {
         transport.sendMail({
           from: 'aquaJSOnemail <admin@aquajs.com>',
@@ -53,15 +60,14 @@ emailTemplates(templatesDir, function(err, template) {
           html: html,
           attachments: attachments,
           text: text
-        }, function(err, responseStatus) {
+        }, function (err, responseStatus) {
           if (err) {
-            console.log(err);
+            log.error('Error sending message to: %s (error: %s, statusCode: %s', locals.email, err.message, err.status);
           } else {
-            console.log(responseStatus.message);
+            log.info('Email sent to: %s (responseStatus: %s)', locals.email, responseStatus.message);
           }
         });
       }
     });
   }
 });
-

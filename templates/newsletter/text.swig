@@ -1,1 +1,1 @@
-<h1>welcome to aquajs test template swig template.</h1>
+Welcome to aquajs first template its a swig template
