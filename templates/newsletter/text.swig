@@ -1,1 +1,0 @@
-Welcome to aquajs first template its a swig template

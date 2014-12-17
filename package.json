@@ -1,8 +1,8 @@
 {
   "name": "aquajs-email",
   "version": "0.0.1",
-  "description": "",
-  "main": "./mailgun/index.js",
+  "description": "Send templated text and HTML email",
+  "main": "./nodemailer",
   "dependencies": {
     "aquajs-logger": "http://sv2lxecxapid01.corp.equinix.com:8080/package/aquajs-logger/latest",
     "async": "~0.9.0",
@@ -17,9 +17,11 @@
     "swig": "~1.4.2",
     "underscore": "~1.7.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^2.0.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC"

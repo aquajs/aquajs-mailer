@@ -6,7 +6,7 @@
     },
     "file": {
       "level": "info",
-      "filename": "aquajs-mailer.log"
+      "filename": "emailtest.log"
     }
   }
 }

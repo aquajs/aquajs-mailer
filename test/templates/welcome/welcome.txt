@@ -1,0 +1,4 @@
+Welcome to Aqua.js
+
+Hello {{ name }}!
+

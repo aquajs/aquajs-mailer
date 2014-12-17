@@ -1,73 +1,53 @@
-// # node-email-templates
+var fs = require('fs'),
+    path = require('path'),
+    swig = require('swig'),
+    nodemailer = require('nodemailer');
 
-// ## Example with [Nodemailer](https://github.com/andris9/Nodemailer)
 
-var path = require('path'),
-  fs = require('fs'),
-  nodemailer = require('nodemailer'),
-  emailTemplates = require('email-templates'),
-  templatesDir = path.resolve(__dirname, '..', 'templates'),
-  loggerConfig = require('../config/env/log_config.json'),
-  logger = require('aquajs-logger'),
-  log;
+/**
+ * Constructor
+ * @param templatePath - full path to templates base directory
+ * @param options - options object
+ * @constructor
+ */
+var Emailer = function (templatePath, options) {
+  this.templatePath = templatePath || '.';
+  this.options = options;
+};
 
-logger.init(loggerConfig);
-log = logger.getLogger();
 
-emailTemplates(templatesDir, function (err, template) {
+/**
+ * Given a template file and data, renders an email message
+ * @param pathname - relative path to file within templates base directory
+ * @param data - an object with properties that match the template variables for setting values
+ * @param callback - the second arg is the formatted message contents as a string
+ */
+Emailer.prototype.render = function (pathname, data, callback) {
+  var template = path.join(this.templatePath, pathname);
 
-  if (err) {
-    log.error('Error loading emailTemplates: %s', err);
-  } else {
+  swig.renderFile(template, data, callback);
+};
 
-    // ## Send a single email
 
-    // Prepare nodemailer transport object
-    var transport = nodemailer.createTransport("SMTP", {
-      service: "Gmail",
-      auth: {
-        user: "uma.more96@gmail.com",
-        pass: "umamore96"
-      }
-    });
+/**
+ * Send an email via nodemailer
+ * @param pathname - relative path to file within templates base directory to be rendered
+ * @param data - an object with properties that match the template variables for setting values (data context)
+ * @param mail - an object with email properties, such as to and from (email context)
+ * @param callback - the second arg is true if successful
+ */
+Emailer.prototype.send = function (pathname, data, mail, callback) {
+  // render the template. All required parameters are supplied via the data context
+  render(template, data, function (err, message) {
+    if (err) return callback(err);
 
-    // An example users object with formatted email function
-    var locals = {
-      email: 'umore@equinix.com',
-      name: {
-        first: 'Mamma',
-        last: 'Mia'
-      }
-    };
+    // TODO implement nodemailer send function. All required parameters should
+    // be supplied to this function as part of the mail context
 
-    var attachments = [{
-      filename: 'test.txt',
-      streamSource: fs.createReadStream('./test.txt')
-    }, {
-      filename: 'test.txt',
-      streamSource: fs.createReadStream('./test.txt')
-    }];
+    callback (null, true);
+  });
+}
 
-    // Send a single email with attachment
-    template('newsletter', locals, function (err, html, text) {
-      if (err) {
-        log.error('Error loading template: %s', err);
-      } else {
-        transport.sendMail({
-          from: 'aquaJSOnemail <admin@aquajs.com>',
-          to: locals.email,
-          subject: 'welcome to aquajs! (with attachment)',
-          html: html,
-          attachments: attachments,
-          text: text
-        }, function (err, responseStatus) {
-          if (err) {
-            log.error('Error sending message to: %s (error: %s, statusCode: %s', locals.email, err.message, err.status);
-          } else {
-            log.info('Email sent to: %s (responseStatus: %s)', locals.email, responseStatus.message);
-          }
-        });
-      }
-    });
-  }
-});
+
+// export constructor
+module.exports = Emailer;
