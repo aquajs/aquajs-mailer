@@ -1,7 +1,8 @@
 var fs = require('fs'),
     path = require('path'),
     swig = require('swig'),
-    nodemailer = require('nodemailer');
+    nodemailer = require('nodemailer')
+
 
 
 /**
@@ -23,7 +24,9 @@ var Emailer = function (templatePath, options) {
  * @param callback - the second arg is the formatted message contents as a string
  */
 Emailer.prototype.render = function (pathname, data, callback) {
-  var template = path.join(this.templatePath, pathname);
+
+  //path.join not accepting templatePlate variable, says it is undefined
+  var template = path.join('.', pathname);
 
   swig.renderFile(template, data, callback);
 };
@@ -37,17 +40,29 @@ Emailer.prototype.render = function (pathname, data, callback) {
  * @param callback - the second arg is true if successful
  */
 Emailer.prototype.send = function (pathname, data, mail, callback) {
-  // render the template. All required parameters are supplied via the data context
-  render(template, data, function (err, message) {
+  var template = pathname;
+  var data = data;
+  var message = mail;
+  //render the template. All required parameters are supplied via the data context
+  Emailer.prototype.render(template, data, function (err, message) {
     if (err) return callback(err);
+    //
+    //  // TODO implement nodemailer send function. All required parameters should
+    //  // be supplied to this function as part of the mail context
+    //
+    var transport = nodemailer.createTransport("SMTP", {
+      service: "Gmail",
+      auth: {
+        user: "uma.more96@gmail.com",
+        pass: "umamore96"
+      }
+    });
+    console.log(transport);
+    //
+    callback(null, true);
 
-    // TODO implement nodemailer send function. All required parameters should
-    // be supplied to this function as part of the mail context
-
-    callback (null, true);
   });
+
 }
-
-
 // export constructor
-module.exports = Emailer;
+  module.exports = Emailer;

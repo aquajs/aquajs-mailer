@@ -7,7 +7,7 @@ var path = require('path'),
   nodemailer = require('nodemailer'),
   emailTemplates = require('email-templates'),
   templatesDir = path.resolve(__dirname, '..', 'templates'),
-  loggerConfig = require('../config/env/log_config.json'),
+  loggerConfig = require('../test/log-config.json'),
   logger = require('aquajs-logger'),
   log;
 
