@@ -55,6 +55,7 @@ describe('send email tests', function () {
         attachment2
     ];
 
+    // note that who we say the email is from isn't necessarily the authorized account that the API will use to send the email
     var mailContext = {
       from: 'Uma More <uma.more96@gmail.com>',
       to: 'umore@equinix.com',
@@ -65,13 +66,13 @@ describe('send email tests', function () {
 
     log.info('[emailtest] sending a test email');
 
-    emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, message) {
+    emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, result) {
       if (err) return done(err);
 
-      assertMessageMatchesExpected(message, 'welcome/welcome.html');
-      //assert(success);
+      // assertMessageMatchesExpected(message, 'welcome/welcome.html');
+      assert(result.success);
 
-      done(err);
+      done();
     });
   });
 });

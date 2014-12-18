@@ -23,12 +23,7 @@ var Emailer = function (templatePath, options) {
  * @param callback - the second arg is the formatted message contents as a string
  */
 Emailer.prototype.render = function (pathname, data, callback) {
-
-  //temporarily using fixed path
-  var template = '../test/templates/welcome/welcome.html';
-  //var template = path.join(this.templatePath, pathname);
-
-  https://github.com/aquajs/aquajs-mailer
+  var template = path.join(this.templatePath, pathname);
   swig.renderFile(template, data, callback);
 };
 
@@ -52,11 +47,12 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
     // TODO implement nodemailer send function. All required parameters should
     // be supplied to this function as part of the mail context
+    // The credentials here reflect the *actual* account to use for sending email, not who the mail context says is the sender
     var transport = nodemailer.createTransport("SMTP", {
       service: "Gmail",
       auth: {
-        user: "uma.more96@gmail.com",
-        pass: "umamore96"
+        user: "",
+        pass: ""
       }
     });
 
@@ -68,16 +64,19 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
       attachments: mail.attachments
     }, function (err, responseStatus) {
       if (err) {
-        console.log('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
+        console.error('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
+        return callback(err);
       } else {
         console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
+
+        var result = {
+          success: /OK/.test(responseStatus.message),
+          status: responseStatus.message
+        };
+
+        callback(null, result);
       }
     });
-
-    // we want to return a status here, but for now, we
-    // return the rendered message just so we can confirm
-    // that it's what we expected to see
-    callback(null, message);
   });
 };
 
