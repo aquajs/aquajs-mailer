@@ -57,7 +57,7 @@ describe('send email tests', function () {
 
     var mailContext = {
       from: 'Uma More <uma.more96@gmail.com>',
-      to: 'uma.more96@gmail.com',
+      to: 'umore@equinix.com',
       subject: 'Hello',
       format: 'html',
       attachment: attachments

@@ -24,9 +24,11 @@ var Emailer = function (templatePath, options) {
  */
 Emailer.prototype.render = function (pathname, data, callback) {
 
-  //path.join not accepting templatePlate variable, says it is undefined
-  var template = path.join(this.templatePath, pathname);
+  //temporarily using fixed path
+  var template = '../test/templates/welcome/welcome.html';
+  //var template = path.join(this.templatePath, pathname);
 
+  https://github.com/aquajs/aquajs-mailer
   swig.renderFile(template, data, callback);
 };
 
@@ -46,7 +48,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
     // this is the rendered message
     // it's ready to email now
-    console.log(message);
+    console.log('logging message: ' + message);
 
     // TODO implement nodemailer send function. All required parameters should
     // be supplied to this function as part of the mail context
@@ -58,7 +60,19 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
       }
     });
 
-    console.log(transport);
+    transport.sendMail({
+      from: mail.from,
+      to: mail.to,
+      subject: mail.subject,
+      text: message,
+      attachments: mail.attachments
+    }, function (err, responseStatus) {
+      if (err) {
+        console.log('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
+      } else {
+        console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
+      }
+    });
 
     // we want to return a status here, but for now, we
     // return the rendered message just so we can confirm
