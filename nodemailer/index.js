@@ -62,7 +62,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
       from: mail.from,
       to: mail.to,
       subject: mail.subject,
-      text: message,
+      html: message,
       attachments: mail.attachments
 
     };
