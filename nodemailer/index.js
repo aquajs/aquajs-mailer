@@ -62,10 +62,15 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
       from: mail.from,
       to: mail.to,
       subject: mail.subject,
-      text: message,
       attachments: mail.attachments
 
     };
+
+    if (mail.format === 'html') {
+      context.html = message;
+    } else {
+      context.text = message;
+    }
 
     transport.sendMail(context, function (err, responseStatus) {
       if (err) {
