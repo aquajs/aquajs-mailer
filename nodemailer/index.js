@@ -4,7 +4,6 @@ var fs = require('fs'),
     nodemailer = require('nodemailer')
 
 
-
 /**
  * Constructor
  * @param templatePath - full path to templates base directory
@@ -40,16 +39,17 @@ Emailer.prototype.render = function (pathname, data, callback) {
  * @param callback - the second arg is true if successful
  */
 Emailer.prototype.send = function (pathname, data, mail, callback) {
-  var template = pathname;
-  var data = data;
-  var message = mail;
-  //render the template. All required parameters are supplied via the data context
-  Emailer.prototype.render(template, data, function (err, message) {
+
+  //render the template. All required parameters are supplied via the data context. The rendered content to email will be called back as the message arg
+  this.render(pathname, data, function (err, message) {
     if (err) return callback(err);
-    //
-    //  // TODO implement nodemailer send function. All required parameters should
-    //  // be supplied to this function as part of the mail context
-    //
+
+    // this is the rendered message
+    // it's ready to email now
+    console.log(message);
+
+    // TODO implement nodemailer send function. All required parameters should
+    // be supplied to this function as part of the mail context
     var transport = nodemailer.createTransport("SMTP", {
       service: "Gmail",
       auth: {
@@ -57,12 +57,16 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
         pass: "umamore96"
       }
     });
+
     console.log(transport);
-    //
-    callback(null, true);
 
+    // we want to return a status here, but for now, we
+    // return the rendered message just so we can confirm
+    // that it's what we expected to see
+    callback(null, message);
   });
+};
 
-}
+
 // export constructor
-  module.exports = Emailer;
+module.exports = Emailer;

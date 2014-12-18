@@ -30,21 +30,11 @@ describe('basic email template tests', function () {
     emailer.render('welcome/welcome.html', data, function (err, message) {
       if (err) return done(err);
 
-      var expectedFile = path.join(renderedPath, 'welcome/welcome.html');
-      var contents = fs.readFileSync(expectedFile, {encoding: 'utf-8'});
-
-      // strip carriage returns from CRLFs, only want newlines
-      contents = contents.replace(/(\r)/gm, '');
-
-      // verify the rendered message matches the expected contents
-      assert.equal(message, contents);
+      assertMessageMatchesExpected(message, 'welcome/welcome.html');
 
       done();
-
     });
-
   });
-
 });
 
 
@@ -75,14 +65,31 @@ describe('send email tests', function () {
 
     log.info('[emailtest] sending a test email');
 
-    emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, success) {
+    emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, message) {
       if (err) return done(err);
 
-      assert(success);
+      assertMessageMatchesExpected(message, 'welcome/welcome.html');
+      //assert(success);
 
       done(err);
     });
-
   });
-
 });
+
+
+/**
+ * Assert that the message actually matches what is expected
+ * @param message - a string containing the message contents
+ * @param expectedPath - a path to a file in within the ./expected-results directory containing what is expected
+ */
+function assertMessageMatchesExpected(message, expectedPath) {
+  var expectedFile = path.join(renderedPath, expectedPath);
+  var expectedContents = fs.readFileSync(expectedFile, {encoding: 'utf-8'});
+
+  // strip carriage returns from CRLFs, only want newlines
+  expectedContents = expectedContents.replace(/(\r)/gm, '');
+
+  // verify the rendered message matches the expected contents
+  assert.equal(message, expectedContents);
+}
+
