@@ -1,7 +1,7 @@
 {
   "name": "aquajs-email",
   "version": "0.0.1",
-  "description": "Send templated text and HTML email",
+  "description": "Send templated text and HTML email to app team",
   "main": "./nodemailer",
   "dependencies": {
     "aquajs-logger": "http://sv2lxecxapid01.corp.equinix.com:8080/package/aquajs-logger/latest",
