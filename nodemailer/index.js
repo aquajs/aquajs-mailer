@@ -43,7 +43,8 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
     // this is the rendered message
     // it's ready to email now
-    console.log('logging message: ' + message);
+    console.log('logging message');
+    console.log(message);
 
     // TODO implement nodemailer send function. All required parameters should
     // be supplied to this function as part of the mail context
@@ -56,13 +57,15 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
       }
     });
 
-    transport.sendMail({
+    var context = {
       from: mail.from,
       to: mail.to,
       subject: mail.subject,
       text: message,
       attachments: mail.attachments
-    }, function (err, responseStatus) {
+    };
+
+    transport.sendMail(context, function (err, responseStatus) {
       if (err) {
         console.error('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
         return callback(err);
@@ -83,3 +86,4 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
 // export constructor
 module.exports = Emailer;
+
