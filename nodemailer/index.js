@@ -26,7 +26,7 @@ var Emailer = function (templatePath, options) {
 Emailer.prototype.render = function (pathname, data, callback) {
 
   //path.join not accepting templatePlate variable, says it is undefined
-  var template = path.join('.', pathname);
+  var template = path.join(this.templatePath, pathname);
 
   swig.renderFile(template, data, callback);
 };
