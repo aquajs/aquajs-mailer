@@ -1,67 +1,91 @@
+var fs = require('fs'),
+    path = require('path'),
+    swig = require('swig'),
+    nodemailer = require('nodemailer')
 
-// # node-email-templates
 
-// ## Example with [Nodemailer](https://github.com/andris9/Nodemailer)
+/**
+ * Constructor
+ * @param templatePath - full path to templates base directory
+ * @param options - options object
+ * @constructor
+ */
+var Emailer = function (templatePath, options) {
+  this.templatePath = templatePath || '.';
+  this.options = options;
+};
 
-var path           = require('path')
-  , templatesDir   = path.resolve(__dirname, '..', 'templates')
-  , emailTemplates = require('email-templates')
-  , nodemailer     = require('nodemailer')
-  , fs             = require('fs');
 
-emailTemplates(templatesDir, function(err, template) {
+/**
+ * Given a template file and data, renders an email message
+ * @param pathname - relative path to file within templates base directory
+ * @param data - an object with properties that match the template variables for setting values
+ * @param callback - the second arg is the formatted message contents as a string
+ */
+Emailer.prototype.render = function (pathname, data, callback) {
+  var template = path.join(this.templatePath, pathname);
+  swig.renderFile(template, data, callback);
+};
 
-  if (err) {
-    console.log(err);
-  } else {
 
-    // ## Send a single email
+/**
+ * Send an email via nodemailer
+ * @param pathname - relative path to file within templates base directory to be rendered
+ * @param data - an object with properties that match the template variables for setting values (data context)
+ * @param mail - an object with email properties, such as to and from (email context)
+ * @param callback - the second arg is true if successful
+ */
+Emailer.prototype.send = function (pathname, data, mail, callback) {
 
-    // Prepare nodemailer transport object
+  //render the template. All required parameters are supplied via the data context. The rendered content to email will be called back as the message arg
+  this.render(pathname, data, function (err, message) {
+    if (err) return callback(err);
+
+    // this is the rendered message
+    // it's ready to email now
+    console.log('logging message');
+    console.log(message);
+    console.log(mail);
+
+    // TODO implement nodemailer send function. All required parameters should
+    // be supplied to this function as part of the mail context
+    // The credentials here reflect the *actual* account to use for sending email, not who the mail context says is the sender
     var transport = nodemailer.createTransport("SMTP", {
       service: "Gmail",
       auth: {
-        user: "uma.more96@gmail.com",
-        pass: "umamore96"
+        user: "peter.svet.test@gmail.com",
+        pass: "equitest"
       }
     });
 
-    // An example users object with formatted email function
-    var locals = {
-      email: 'umore@equinix.com',
-      name: {
-        first: 'Mamma',
-        last: 'Mia'
-      }
+    var context = {
+      from: mail.from,
+      to: mail.to,
+      subject: mail.subject,
+      text: message,
+      attachments: mail.attachments
+
     };
-    var attachments = [{
-      filename: 'test.txt',
-      streamSource: fs.createReadStream('./test.txt')
-    },{
-      filename: 'test.txt',
-      streamSource: fs.createReadStream('./test.txt')
-    }];
-    // Send a single email with attachment
-    template('newsletter', locals, function(err, html, text) {
+
+    transport.sendMail(context, function (err, responseStatus) {
       if (err) {
-        console.log(err);
+        console.error('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
+        return callback(err);
       } else {
-        transport.sendMail({
-          from: 'aquaJSOnemail <admin@aquajs.com>',
-          to: locals.email,
-          subject: 'welcome to aquajs! (with attachment)',
-          html: html,
-          attachments: attachments,
-          text: text
-        }, function(err, responseStatus) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(responseStatus.message);
-          }
-        });
+        console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
+
+        var result = {
+          success: /OK/.test(responseStatus.message),
+          status: responseStatus.message
+        };
+
+        callback(null, result);
       }
     });
-  }
-});
+  });
+};
+
+
+// export constructor
+module.exports = Emailer;
 
