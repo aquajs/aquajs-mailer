@@ -52,8 +52,8 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     var transport = nodemailer.createTransport("SMTP", {
       service: "Gmail",
       auth: {
-        user: "",
-        pass: ""
+        user: "peter.svet.test@gmail.com",
+        pass: "equitest"
       }
     });
 
