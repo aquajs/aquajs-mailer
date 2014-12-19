@@ -1,7 +1,11 @@
 var fs = require('fs'),
     path = require('path'),
     swig = require('swig'),
-    nodemailer = require('nodemailer')
+    nodemailer = require('nodemailer');
+
+
+// TODO: this is a temporary solution for configuring transport credentials
+var config = require('../email-config.json');
 
 
 /**
@@ -33,37 +37,30 @@ Emailer.prototype.render = function (pathname, data, callback) {
  * @param pathname - relative path to file within templates base directory to be rendered
  * @param data - an object with properties that match the template variables for setting values (data context)
  * @param mail - an object with email properties, such as to and from (email context)
- * @param callback - the second arg is true if successful
+ * @param callback - a function that takes error and result args. If defined, the result
+ *                   object will have success (boolean) and status (string) properties
  */
 Emailer.prototype.send = function (pathname, data, mail, callback) {
-
-  //render the template. All required parameters are supplied via the data context. The rendered content to email will be called back as the message arg
+  // render the template. All required parameters are supplied to the render
+  // function via the data context. The rendered content ready to email will
+  // be called back as the message arg
   this.render(pathname, data, function (err, message) {
     if (err) return callback(err);
 
-    // this is the rendered message or messages
-    // it's ready to email now
-    console.log('logging message');
-    console.log(message);
-    console.log(mail);
+    // The credentials here reflect the *actual* account to use for sending
+    // email, not who the mail context says is the sender
+    var transport = nodemailer.createTransport("SMTP", config.transport);
 
-    // TODO implement nodemailer send function. All required parameters should
-    // be supplied to this function as part of the mail context
-    // The credentials here reflect the *actual* account to use for sending email, not who the mail context says is the sender
-    var transport = nodemailer.createTransport("SMTP", {
-      service: "Gmail",
-      auth: {
-        user: "peter.svet.test@gmail.com",
-        pass: "equitest"
-      }
+    // transform attachments to format expected by nodemailer
+    var attachments = mail.attachments.map(function (filename) {
+      return {filePath: filename};
     });
 
     var context = {
       from: mail.from,
       to: mail.to,
       subject: mail.subject,
-      attachments: mail.attachments
-
+      attachments: attachments
     };
 
     if (mail.format === 'html') {
