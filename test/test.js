@@ -11,7 +11,7 @@ var Emailer = require('..'),
     templatePath = path.join(__dirname, 'templates'),
     renderedPath = path.join(__dirname, 'expected-results');
 
-var testAttachmentsPath = path.join(__dirname, './attachments');
+var testAttachmentsPath = path.join(__dirname, 'attachments');
 
 
 before(function () {
@@ -47,21 +47,18 @@ describe('send email tests', function () {
       name: 'Uma'
     };
 
-    var attachment1 = path.join(testAttachmentsPath, 'attachment1');
-    var attachment2 = path.join(testAttachmentsPath, 'attachment2');
-
     var attachments = [
-        attachment1,
-        attachment2
+      path.join(testAttachmentsPath, 'attachment1.txt'),
+      path.join(testAttachmentsPath, 'attachment2.txt')
     ];
 
     // note that who we say the email is from isn't necessarily the authorized account that the API will use to send the email
     var mailContext = {
       from: 'Uma More <uma.more96@gmail.com>',
-      to: 'umore@equinix.com',
+      to: 'uma.more96@gmail.com',
       subject: 'Hello',
       format: 'html',
-      attachment: attachments
+      attachments: attachments
     };
 
     log.info('[emailtest] sending a test email');

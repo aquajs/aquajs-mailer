@@ -1,29 +1,18 @@
 {
   "name": "aquajs-email",
   "version": "0.0.1",
-  "description": "Send templated text and HTML email to app team",
+  "description": "Send swig-based templated text and HTML email to app team",
   "main": "./nodemailer",
+  "scripts": {
+    "test": "mocha"
+  },
   "dependencies": {
     "aquajs-logger": "http://sv2lxecxapid01.corp.equinix.com:8080/package/aquajs-logger/latest",
-    "async": "^0.9.0",
-    "consolidate": "^0.10.0",
-    "ejs": "^1.0.0",
-    "email-templates": "^1.1.2",
-    "glob": "^4.3.1",
-    "install": "~0.1.8",
-    "juice2": "^1.3.1",
-    "mailgun-js": "^0.6.7",
     "nodemailer": "^0.7.1",
-    "swig": "^1.4.2",
-    "underscore": "^1.7.0",
-    "mocha": "^2.0.1"
+    "swig": "^1.4.2"
   },
   "devDependencies": {
     "mocha": "^2.0.1"
   },
-  "scripts": {
-    "test": "mocha"
-  },
-  "author": "",
   "license": "ISC"
 }

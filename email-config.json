@@ -1,0 +1,10 @@
+{
+  "transport": {
+    "service": "Gmail",
+    "auth": {
+      "user": "",
+      "pass": ""
+    }
+  }
+}
+
