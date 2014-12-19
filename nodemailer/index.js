@@ -41,7 +41,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
   this.render(pathname, data, function (err, message) {
     if (err) return callback(err);
 
-    // this is the rendered message
+    // this is the rendered message or messages
     // it's ready to email now
     console.log('logging message');
     console.log(message);
