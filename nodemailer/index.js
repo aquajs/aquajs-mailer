@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     swig = require('swig'),
+    juice = require('juice'),
     nodemailer = require('nodemailer');
 
 
@@ -28,9 +29,17 @@ var Emailer = function (templatePath, options) {
  */
 Emailer.prototype.render = function (pathname, data, callback) {
   var template = path.join(this.templatePath, pathname);
+
+  ////experimenting with reading unknown files -- disregard for now
+  //var dir = path.dirname(template)
+  //var files = fs.readdirSync(dir);
+  //for (var i in files) {
+  //  if (path.extname(files[i]) === '.css') {
+  //    console.log(files[i]);
+  //  };
+  //};
   swig.renderFile(template, data, callback);
 };
-
 
 /**
  * Send an email via nodemailer
@@ -41,11 +50,19 @@ Emailer.prototype.render = function (pathname, data, callback) {
  *                   object will have success (boolean) and status (string) properties
  */
 Emailer.prototype.send = function (pathname, data, mail, callback) {
+  var templatePath = this.templatePath;
   // render the template. All required parameters are supplied to the render
   // function via the data context. The rendered content ready to email will
   // be called back as the message arg
   this.render(pathname, data, function (err, message) {
     if (err) return callback(err);
+
+    //style.css path for use with hard-coded option below
+    var options = {};
+    options.url = path.join(templatePath, '/welcome/style.css');
+    //// hard-coded path
+    var css = fs.readFileSync(options.url).toString();
+    var styledMessage = juice.inlineContent(message, css);
 
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
@@ -64,25 +81,30 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     };
 
     if (mail.format === 'html') {
+      //context.html = styledMessage || message;
       context.html = message;
     } else {
       context.text = message;
     }
 
-    transport.sendMail(context, function (err, responseStatus) {
-      if (err) {
-        console.error('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
-        return callback(err);
-      } else {
-        console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
+    //inline styling with style tags -- DOESN'T WORK WITH LINK TAGS
+    var template = path.join(templatePath, pathname);
+    juice(template, function(err){
+      transport.sendMail(context, function (err, responseStatus) {
+        if (err) {
+          console.error('Error sending message to: %s (error: %s, statusCode: %s)', mail.to, err.message, err.status);
+          return callback(err);
+        } else {
+          console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
 
-        var result = {
-          success: /OK/.test(responseStatus.message),
-          status: responseStatus.message
-        };
+          var result = {
+            success: /OK/.test(responseStatus.message),
+            status: responseStatus.message
+          };
 
-        callback(null, result);
-      }
+          callback(null, result);
+        }
+      });
     });
   });
 };

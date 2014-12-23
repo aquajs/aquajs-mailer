@@ -27,10 +27,10 @@ describe('basic email template tests', function () {
   it('should generate a formatted template', function (done) {
     var data = {name: 'Uma'};
 
-    emailer.render('welcome/welcome.html', data, function (err, message) {
+    emailer.render('welcome/welcome2.html', data, function (err, message) {
       if (err) return done(err);
 
-      assertMessageMatchesExpected(message, 'welcome/welcome.html');
+      assertMessageMatchesExpected(message, 'welcome/welcome2.html');
 
       done();
     });
@@ -54,8 +54,8 @@ describe('send email tests', function () {
 
     // note that who we say the email is from isn't necessarily the authorized account that the API will use to send the email
     var mailContext = {
-      from: 'Uma More <uma.more96@gmail.com>',
-      to: 'uma.more96@gmail.com',
+      from: 'Uma More <petersvetlichny@gmail.com>',
+      to: 'petersvetlichny@gmail.com',
       subject: 'Hello',
       format: 'html',
       attachments: attachments
@@ -63,7 +63,7 @@ describe('send email tests', function () {
 
     log.info('[emailtest] sending a test email');
 
-    emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, result) {
+    emailer.send('welcome/welcome2.html', templateContext, mailContext, function (err, result) {
       if (err) return done(err);
 
       // assertMessageMatchesExpected(message, 'welcome/welcome.html');
@@ -90,4 +90,3 @@ function assertMessageMatchesExpected(message, expectedPath) {
   // verify the rendered message matches the expected contents
   assert.equal(message, expectedContents);
 }
-
