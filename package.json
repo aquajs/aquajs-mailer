@@ -1,7 +1,7 @@
 {
-  "name": "aquajs-email",
+  "name": "aquajs-mailer",
   "version": "0.0.1",
-  "description": "Send swig-based templated text and HTML email to app team",
+  "description": "Send swig-based templated text and HTML email",
   "main": "./nodemailer",
   "scripts": {
     "test": "mocha"
