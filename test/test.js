@@ -27,10 +27,11 @@ describe('basic email template tests', function () {
   it('should generate a formatted template', function (done) {
     var data = {name: 'Uma'};
 
-    emailer.render('welcome/welcome2.html', data, function (err, message) {
+    emailer.render('welcome/welcome.html', data, 'welcome/style.css', function (err, message) {
+      console.log(message);
       if (err) return done(err);
 
-      assertMessageMatchesExpected(message, 'welcome/welcome2.html');
+      assertMessageMatchesExpected(message, 'welcome/welcome.html');
 
       done();
     });
@@ -38,7 +39,7 @@ describe('basic email template tests', function () {
 });
 
 
-describe('send email tests', function () {
+describe.skip('send email tests', function () {
 
   this.timeout(5 * 1000);
 
@@ -63,11 +64,11 @@ describe('send email tests', function () {
 
     log.info('[emailtest] sending a test email');
 
-    emailer.send('welcome/welcome2.html', templateContext, mailContext, function (err, result) {
+    emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, result) {
       if (err) return done(err);
 
-      // assertMessageMatchesExpected(message, 'welcome/welcome.html');
       assert(result.success);
+      assertMessageMatchesExpected(message, 'welcome/welcome.html');
 
       done();
     });

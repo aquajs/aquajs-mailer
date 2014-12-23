@@ -27,18 +27,26 @@ var Emailer = function (templatePath, options) {
  * @param data - an object with properties that match the template variables for setting values
  * @param callback - the second arg is the formatted message contents as a string
  */
-Emailer.prototype.render = function (pathname, data, callback) {
+Emailer.prototype.render = function (pathname, data, cssPath, callback) {
+  if (typeof cssPath === 'function') {
+    callback = cssPath;
+    cssPath = undefined;
+  }
+
   var template = path.join(this.templatePath, pathname);
 
-  ////experimenting with reading unknown files -- disregard for now
-  //var dir = path.dirname(template)
-  //var files = fs.readdirSync(dir);
-  //for (var i in files) {
-  //  if (path.extname(files[i]) === '.css') {
-  //    console.log(files[i]);
-  //  };
-  //};
-  swig.renderFile(template, data, callback);
+  swig.renderFile(template, data, function(err, rendered) {
+    if (err) return callback(err);
+
+    if (!cssPath) {
+      callback(null, rendered);
+    } else {
+      // need fully qualified path
+      cssPath = path.join(this.templatePath, cssPath);
+      var url = 'file://' + cssPath;
+      juice.juiceContent(rendered, { url: url }, callback);
+    }
+  }.bind(this));
 };
 
 /**
@@ -57,12 +65,9 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
   this.render(pathname, data, function (err, message) {
     if (err) return callback(err);
 
-    //style.css path for use with hard-coded option below
-    var options = {};
-    options.url = path.join(templatePath, '/welcome/style.css');
-    //// hard-coded path
-    var css = fs.readFileSync(options.url).toString();
-    var styledMessage = juice.inlineContent(message, css);
+    console.log('===============================================');
+    console.log(message);
+    console.log('===============================================');
 
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
@@ -81,30 +86,25 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     };
 
     if (mail.format === 'html') {
-      //context.html = styledMessage || message;
       context.html = message;
     } else {
       context.text = message;
     }
 
-    //inline styling with style tags -- DOESN'T WORK WITH LINK TAGS
-    var template = path.join(templatePath, pathname);
-    juice(template, function(err){
-      transport.sendMail(context, function (err, responseStatus) {
-        if (err) {
-          console.error('Error sending message to: %s (error: %s, statusCode: %s)', mail.to, err.message, err.status);
-          return callback(err);
-        } else {
-          console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
+    transport.sendMail(context, function (err, responseStatus) {
+      if (err) {
+        console.error('Error sending message to: %s (error: %s, statusCode: %s)', mail.to, err.message, err.status);
+        return callback(err);
+      } else {
+        console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
 
-          var result = {
-            success: /OK/.test(responseStatus.message),
-            status: responseStatus.message
-          };
+        var result = {
+          success: /OK/.test(responseStatus.message),
+          status: responseStatus.message
+        };
 
-          callback(null, result);
-        }
-      });
+        callback(null, result);
+      }
     });
   });
 };
