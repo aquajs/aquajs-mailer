@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     swig = require('swig'),
+    juice = require('juice'),
     nodemailer = require('nodemailer');
 
 
@@ -26,11 +27,27 @@ var Emailer = function (templatePath, options) {
  * @param data - an object with properties that match the template variables for setting values
  * @param callback - the second arg is the formatted message contents as a string
  */
-Emailer.prototype.render = function (pathname, data, callback) {
-  var template = path.join(this.templatePath, pathname);
-  swig.renderFile(template, data, callback);
-};
+Emailer.prototype.render = function (pathname, data, cssPath, callback) {
+  if (typeof cssPath === 'function') {
+    callback = cssPath;
+    cssPath = undefined;
+  }
 
+  var template = path.join(this.templatePath, pathname);
+
+  swig.renderFile(template, data, function(err, rendered) {
+    if (err) return callback(err);
+
+    if (!cssPath) {
+      callback(null, rendered);
+    } else {
+      // need fully qualified path
+      cssPath = path.join(this.templatePath, cssPath);
+      var url = 'file://' + cssPath;
+      juice.juiceContent(rendered, { url: url }, callback);
+    }
+  }.bind(this));
+};
 
 /**
  * Send an email via nodemailer
@@ -41,11 +58,16 @@ Emailer.prototype.render = function (pathname, data, callback) {
  *                   object will have success (boolean) and status (string) properties
  */
 Emailer.prototype.send = function (pathname, data, mail, callback) {
+  var templatePath = this.templatePath;
   // render the template. All required parameters are supplied to the render
   // function via the data context. The rendered content ready to email will
   // be called back as the message arg
   this.render(pathname, data, function (err, message) {
     if (err) return callback(err);
+
+    console.log('===============================================');
+    console.log(message);
+    console.log('===============================================');
 
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
@@ -71,7 +93,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
     transport.sendMail(context, function (err, responseStatus) {
       if (err) {
-        console.error('Error sending message to: %s (error: %s, statusCode: %s', mail.to, err.message, err.status);
+        console.error('Error sending message to: %s (error: %s, statusCode: %s)', mail.to, err.message, err.status);
         return callback(err);
       } else {
         console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
