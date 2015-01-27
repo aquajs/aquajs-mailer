@@ -77,7 +77,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
         console.log('Email sent to: %s (responseStatus: %s)', mail.to, responseStatus.message);
 
         var result = {
-          success: /OK/.test(responseStatus.message),
+          success: /OK|[Aa]ccepted/.test(responseStatus.message),
           status: responseStatus.message
         };
 
