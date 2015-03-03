@@ -66,7 +66,6 @@ describe('send email tests', function () {
     emailer.send('welcome/welcome.html', templateContext, mailContext, function (err, result) {
       if (err) return done(err);
 
-      // assertMessageMatchesExpected(message, 'welcome/welcome.html');
       assert(result.success);
 
       done();
