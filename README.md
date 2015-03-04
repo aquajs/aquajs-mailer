@@ -20,7 +20,7 @@ To send a message, call `emailer.send` with these arguments:
 
 ```
 var Emailer = require('aquajs-mailer');
-var templateDir = require(<path to swig templates directory>);
+var templateDir = <path to swig templates directory>;
 
 var emailer = new Emailer(templateDir);
 
