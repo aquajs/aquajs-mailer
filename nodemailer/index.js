@@ -10,13 +10,13 @@ var config = require('../email-config.json');
 
 /**
  * Constructor
- * @param templatePath - full path to templates base directory
  * @param userConfig - configuration passed via microservice
+ * @param templatePath - full path to templates base directory
  * @param options - options object
  * @constructor
  */
-var Emailer = function (templatePath, userConfig, options) {
-  config = userConfig || config;
+var Emailer = function (userConfig, templatePath, options) {
+  config = userConfig;
   this.templatePath = templatePath || '.';
   this.options = options;
 };
@@ -53,22 +53,16 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     // email, not who the mail context says is the sender
     var transport = nodemailer.createTransport("SMTP", config.transport);
 
-    // if attachments array was passed, transform array to format expected by nodemailer
-    if (mail.attachments) {
-      if (!Array.isArray(mail.attachments)) {
-        console.error("Message not sent: 'attachments' must be an array");
-        process.exit(1);
-      }
-      var attachments = mail.attachments.map(function (filename) {
-        return {filePath: filename};
-      });
-    }
+    // transform attachments to format expected by nodemailer
+    var attachments = mail.attachments.map(function (filename) {
+      return {filePath: filename};
+    });
 
     var context = {
       from: mail.from,
       to: mail.to,
       subject: mail.subject,
-      attachments: attachments || []
+      attachments: attachments
     };
 
     if (mail.format === 'html') {
