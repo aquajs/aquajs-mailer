@@ -50,14 +50,15 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
     var transport = nodemailer.createTransport("SMTP", config.transport);
+    
+    var attachments = [];
 
     // if attachments array was passed, transform array to format expected by nodemailer
     if (mail.attachments) {
       if (!Array.isArray(mail.attachments)) {
-        console.error("Message not sent: 'attachments' must be an array");
-        process.exit(1);
+        callback("Message not sent: 'attachments' must be an array");
       }
-      var attachments = mail.attachments.map(function (filename) {
+      attachments = mail.attachments.map(function (filename) {
         return {filePath: filename};
       });
     }
@@ -66,7 +67,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
       from: mail.from,
       to: mail.to,
       subject: mail.subject,
-      attachments: attachments || []
+      attachments: attachments
     };
 
     if (mail.format === 'html') {
