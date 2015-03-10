@@ -54,8 +54,8 @@ describe('send email tests', function () {
 
     // note that who we say the email is from isn't necessarily the authorized account that the API will use to send the email
     var mailContext = {
-      from: 'Uma More <uma.more96@gmail.com>',
-      to: 'uma.more96@gmail.com',
+      from: 'Uma More <ramp@equinix.com>',
+      to: 'umore@equinix.com',
       subject: 'Hello',
       format: 'html',
       attachments: attachments

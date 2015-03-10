@@ -1,10 +1,11 @@
 {
   "transport": {
-    "service": "Gmail",
-    "auth": {
-      "user": "",
-      "pass": ""
-    }
+   "host" : "mailhost.corp.equinix.com",
+
+    "port": "25"
+   
+
   }
 }
+
 
