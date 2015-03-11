@@ -10,11 +10,13 @@ var config = require('../email-config.json');
 
 /**
  * Constructor
+ * @param userConfig - configuration passed via microservice
  * @param templatePath - full path to templates base directory
  * @param options - options object
  * @constructor
  */
-var Emailer = function (templatePath, options) {
+var Emailer = function (userConfig, templatePath, options) {
+  config = userConfig;
   this.templatePath = templatePath || '.';
   this.options = options;
 };
