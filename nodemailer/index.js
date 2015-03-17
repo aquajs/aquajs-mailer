@@ -50,13 +50,13 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
     var transport = nodemailer.createTransport("SMTP", config.transport);
-    
+
     var attachments = [];
 
     // if attachments array was passed, transform array to format expected by nodemailer
     if (mail.attachments) {
       if (!Array.isArray(mail.attachments)) {
-        callback("Message not sent: 'attachments' must be an array");
+        return callback("Message not sent: 'attachments' must be an array");
       }
       attachments = mail.attachments.map(function (filename) {
         return {filePath: filename};
