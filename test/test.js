@@ -56,9 +56,11 @@ describe('send email tests', function () {
     var mailContext = {
       from: 'Uma More <ramp@equinix.com>',
       to: 'umore@equinix.com',
-      subject: 'Hello',
+      subject: 'Ecx-email',
       format: 'html',
       attachments: attachments
+      //text: "Hello", // plaintext body
+      //html: "<b>Hello world ✔</b>"
     };
 
     log.info('[emailtest] sending a test email');
