@@ -51,10 +51,17 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     // email, not who the mail context says is the sender
     var transport = nodemailer.createTransport("SMTP", config.transport);
 
-    // transform attachments to format expected by nodemailer
-    var attachments = mail.attachments.map(function (filename) {
-      return {filePath: filename};
-    });
+    var attachments = [];
+
+    // if attachments array was passed, transform array to format expected by nodemailer
+    if (mail.attachments) {
+      if (!Array.isArray(mail.attachments)) {
+        return callback("Message not sent: 'attachments' must be an array");
+      }
+      attachments = mail.attachments.map(function (filename) {
+        return {filePath: filename};
+      });
+    }
 
     var context = {
       from: mail.from,
