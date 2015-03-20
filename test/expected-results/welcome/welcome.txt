@@ -1,4 +1,13 @@
-Welcome to Aqua.js
+The threshold  that you have set on the Equinix Cloud Exchange Portal has been exceeded for the following port(s).
 
-Hello Uma!
+Details:
 
+${metroName}
+${portName}
+${bandwidthThreshold}%
+
+If you any have questions or concerns, please contact the Cloud Exchange team at cxportal@equinix.com.
+
+Thank you,
+
+The Equinix Team

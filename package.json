@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "aquajs-logger": "http://sv2lxecxapid01.corp.equinix.com:8080/package/aquajs-logger/latest",
+    "aquajs-logger": "*",
     "nodemailer": "^0.7.1",
     "swig": "^1.4.2"
   },
