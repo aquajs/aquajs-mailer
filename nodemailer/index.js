@@ -53,7 +53,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     // if attachments array was passed, transform array to format expected by nodemailer
     if (mail.attachments) {
       if (!Array.isArray(mail.attachments)) {
-        return callback("Message not sent: 'attachments' must be an array");
+        return callback(new Error("Message not sent: 'attachments' must be an array"));
       }
       attachments = mail.attachments.map(function (filename) {
         return {filePath: filename};
