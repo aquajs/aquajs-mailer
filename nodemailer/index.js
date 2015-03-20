@@ -46,8 +46,6 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
-    console.log(this.config)
-
     var transport = nodemailer.createTransport("SMTP", this.config.transport);
 
     var attachments = [];
