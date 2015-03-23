@@ -3,18 +3,15 @@ var fs = require('fs'),
     swig = require('swig'),
     nodemailer = require('nodemailer');
 
-
-// TODO: this is a temporary solution for configuring transport credentials
-var config = require('../email-config.json');
-
-
 /**
  * Constructor
+ * @param config - configuration passed via microservice
  * @param templatePath - full path to templates base directory
  * @param options - options object
  * @constructor
  */
-var Emailer = function (templatePath, options) {
+var Emailer = function (config, templatePath, options) {
+  this.config = config;
   this.templatePath = templatePath || '.';
   this.options = options;
 };
@@ -49,14 +46,14 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
     // The credentials here reflect the *actual* account to use for sending
     // email, not who the mail context says is the sender
-    var transport = nodemailer.createTransport("SMTP", config.transport);
+    var transport = nodemailer.createTransport("SMTP", this.config.transport);
 
     var attachments = [];
 
     // if attachments array was passed, transform array to format expected by nodemailer
     if (mail.attachments) {
       if (!Array.isArray(mail.attachments)) {
-        return callback("Message not sent: 'attachments' must be an array");
+        return callback(new Error("Message not sent: 'attachments' must be an array"));
       }
       attachments = mail.attachments.map(function (filename) {
         return {filePath: filename};
@@ -91,7 +88,7 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
         callback(null, result);
       }
     });
-  });
+  }.bind(this));
 };
 
 
