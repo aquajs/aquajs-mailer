@@ -5,7 +5,7 @@ Send swig-based templated text and HTML email over SMTP.
 
 
 #### Usage
-Supply `"user"` and `"pass"` credentials to `email-config.json`. This will be the authorized email address used to actually send messages.
+Be sure to supply credentials to `email-config.json` in your microservice's `config` directory. This will be the authorized email address used to actually send messages.
 
 To send a message, call `emailer.send` with these arguments:
    * `template`: {string} Path to specific template within `templateDir` to be rendered in message
@@ -20,9 +20,10 @@ To send a message, call `emailer.send` with these arguments:
 
 ```
 var Emailer = require('aquajs-mailer');
+var config = require('./config/mailer/email-config.json');
 var templateDir = <path to swig templates directory>;
 
-var emailer = new Emailer(templateDir);
+var emailer = new Emailer(config, templateDir);
 
 var data = {
   message: "Hello World"
