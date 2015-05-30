@@ -63,6 +63,8 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     var context = {
       from: mail.from,
       to: mail.to,
+      cc:mail.cc,
+      bcc:mail.bcc,
       subject: mail.subject,
       attachments: attachments
     };
