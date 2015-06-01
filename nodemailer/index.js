@@ -26,7 +26,6 @@ var Emailer = function (config, templatePath, options) {
 
 Emailer.prototype.render = function (pathname, data, callback) {
   var template = path.join(this.templatePath, pathname);
-  console.log("before invalidating cache");
   swig.setDefaults({cache:false});
   swig.invalidateCache();
   swig.renderFile(template, data, callback);
