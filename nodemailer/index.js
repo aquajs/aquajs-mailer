@@ -23,8 +23,11 @@ var Emailer = function (config, templatePath, options) {
  * @param data - an object with properties that match the template variables for setting values
  * @param callback - the second arg is the formatted message contents as a string
  */
+
 Emailer.prototype.render = function (pathname, data, callback) {
   var template = path.join(this.templatePath, pathname);
+  swig.setDefaults({cache:false});
+  swig.invalidateCache();
   swig.renderFile(template, data, callback);
 };
 
@@ -63,6 +66,8 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
     var context = {
       from: mail.from,
       to: mail.to,
+      cc:mail.cc,
+      bcc:mail.bcc,
       subject: mail.subject,
       attachments: attachments
     };
