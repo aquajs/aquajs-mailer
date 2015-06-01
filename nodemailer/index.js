@@ -23,8 +23,12 @@ var Emailer = function (config, templatePath, options) {
  * @param data - an object with properties that match the template variables for setting values
  * @param callback - the second arg is the formatted message contents as a string
  */
+
 Emailer.prototype.render = function (pathname, data, callback) {
   var template = path.join(this.templatePath, pathname);
+  console.log("before invalidating cache");
+  swig.setDefaults({cache:false});
+  swig.invalidateCache();
   swig.renderFile(template, data, callback);
 };
 
