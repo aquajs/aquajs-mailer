@@ -87,7 +87,8 @@ Emailer.prototype.send = function (pathname, data, mail, callback) {
 
         var result = {
           success: /OK|[Aa]ccepted/.test(responseStatus.message),
-          status: responseStatus.message
+          status: responseStatus.message,
+          emailBody:message
         };
 
         callback(null, result);
