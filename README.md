@@ -17,6 +17,7 @@ To send a message, call `emailer.send` with these arguments:
       - `format`: Defaults to `text` unless set to `html`
       - `attachments`: Optional array of file paths
    * `callback`: {function} Function to handle whatever work upon completion. Returns `err` and `result` object containing `success`(boolean), and `status` (message from `nodemailer` response)
+   * To get the sent email body use response.emailBody
 
 ```
 var Emailer = require('aquajs-mailer');
