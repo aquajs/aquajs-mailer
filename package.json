@@ -6,13 +6,23 @@
   "scripts": {
     "test": "mocha"
   },
+    "developers": [
+    "Venkat Rangasamy <vrangasamy@equinix.com>",
+    "Aswini Atibudhi <aatibudhi@equinix.com>",
+    "Tony Pujals <tpujals@equinix.com> (http://twitter.com/subfuzion)",
+    "Peter Svetlichny <psvetlichny@equinix.com> (http://twitter.com/p_svetlichny)",
+    "Uma More <umore@equinix.com>",
+    "Elcina Tuscano <etuscano@equinix.com>",
+    "Chakradhar Jonagam <cjonagam@equinix.com>",
+    "Namratha Ambekar <nambekar@equinix.com>"
+  ],
   "dependencies": {
-    "aquajs-logger": "*",
-    "nodemailer": "^0.7.1",
-    "swig": "^1.4.2"
+    "aquajs-logger": "latest",
+    "nodemailer": "0.7.1",
+    "swig": "1.4.2"
   },
   "devDependencies": {
-    "mocha": "^2.0.1"
+    "mocha": "2.0.1"
   },
   "publishConfig": {
     "registry": "http://nexus.corp.equinix.com/nexus/content/repositories/Equinix-AquaJS-Release/"
