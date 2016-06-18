@@ -1,6 +1,6 @@
 {
   "name": "aquajs-mailer",
-  "version": "0.0.3",
+  "version": "1.0.1",
   "description": "Send swig-based templated text and HTML email",
   "main": "./nodemailer",
   "scripts": {
